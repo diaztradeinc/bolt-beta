@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, ArrowLeft } from 'lucide-react';
+import { Brain } from 'lucide-react';
 import { AuthModal } from '../components/AuthModal';
 
 interface AuthPageProps {

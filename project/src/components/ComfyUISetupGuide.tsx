@@ -4,15 +4,10 @@ import {
   Server, 
   Download, 
   Terminal, 
-  CheckCircle, 
-  AlertCircle, 
   ChevronDown, 
   ChevronUp,
   Copy,
   ExternalLink,
-  Play,
-  Folder,
-  Settings,
   Shield,
   Zap
 } from 'lucide-react';

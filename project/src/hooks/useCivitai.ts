@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { civitaiService } from '../services/civitai';
 import type { CivitaiModel } from '../types/models';
 

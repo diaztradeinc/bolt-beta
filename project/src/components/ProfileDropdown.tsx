@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Settings, LogOut, Crown, Heart, ChevronDown } from 'lucide-react';
+import { Settings, LogOut, Crown, Heart, ChevronDown } from 'lucide-react';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface ProfileDropdownProps {

@@ -1,4 +1,4 @@
-import type { ComfyUIWorkflow, GenerationRequest, GenerationResponse, VideoGenerationRequest } from '../types/models';
+import type { GenerationRequest, GenerationResponse, VideoGenerationRequest } from '../types/models';
 
 export class ComfyUIService {
   private static instance: ComfyUIService;
@@ -30,9 +30,8 @@ export class ComfyUIService {
     return {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      // Multiple ngrok bypass headers for different scenarios
+      // ngrok bypass header (single declaration)
       'ngrok-skip-browser-warning': 'true',
-      'ngrok-skip-browser-warning': 'any',
       'User-Agent': 'ComfyUI-Client/1.0',
       // Add cache busting to avoid cached HTML responses
       'Cache-Control': 'no-cache, no-store, must-revalidate',

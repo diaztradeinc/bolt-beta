@@ -3,27 +3,29 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Video, 
   Play, 
-  Pause, 
   RotateCcw, 
-  Download, 
   Settings, 
   Clock, 
   Film, 
   Zap,
   ChevronDown,
   ChevronUp,
-  Sparkles,
-  Eye,
   Upload,
   X,
-  Cpu,
   Loader2
 } from 'lucide-react';
 import { ModelSelector } from './ModelSelector';
 import { useComfyUI } from '../hooks/useComfyUI';
 import type { CivitaiModel, VideoGenerationRequest } from '../types/models';
 
-const GlowCard = ({ children, className = "", onClick, hover = true }) => (
+interface GlowCardProps {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  hover?: boolean;
+}
+
+const GlowCard = ({ children, className = "", onClick, hover = true }: GlowCardProps) => (
   <motion.div
     onClick={onClick}
     className={`relative bg-neural-800/60 backdrop-blur-sm border border-neural-700/50 rounded-2xl overflow-hidden ${className}`}
@@ -121,6 +123,12 @@ export const VideoPage: React.FC = () => {
 
   const recentVideos = Array(4).fill("https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg");
 
+  // Common props for GlowCard when they're not interactive
+  const staticGlowCardProps = {
+    hover: false,
+    onClick: () => {} // Empty function to satisfy TypeScript
+  };
+
   return (
     <div className="space-y-8 overflow-y-auto max-h-screen pb-20">
       {/* Video Model Selection */}
@@ -175,7 +183,7 @@ export const VideoPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <GlowCard className="p-6">
+        <GlowCard className="p-6" {...staticGlowCardProps}>
           <div className="flex items-center gap-3 mb-4">
             <Upload className="w-5 h-5 text-purple-400" />
             <h3 className="text-lg font-semibold text-white">Source Image (Optional)</h3>
@@ -272,7 +280,7 @@ export const VideoPage: React.FC = () => {
         transition={{ delay: 0.4 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        <GlowCard className="p-6" hover={false}>
+        <GlowCard className="p-6" {...staticGlowCardProps}>
           <div className="flex items-center gap-3 mb-4">
             <Clock className="w-5 h-5 text-purple-400" />
             <h3 className="text-lg font-semibold text-white">Duration</h3>
@@ -298,7 +306,7 @@ export const VideoPage: React.FC = () => {
           </div>
         </GlowCard>
 
-        <GlowCard className="p-6" hover={false}>
+        <GlowCard className="p-6" {...staticGlowCardProps}>
           <div className="flex items-center gap-3 mb-4">
             <Settings className="w-5 h-5 text-purple-400" />
             <h3 className="text-lg font-semibold text-white">Resolution</h3>
@@ -315,7 +323,7 @@ export const VideoPage: React.FC = () => {
           </select>
         </GlowCard>
 
-        <GlowCard className="p-6" hover={false}>
+        <GlowCard className="p-6" {...staticGlowCardProps}>
           <div className="flex items-center gap-3 mb-4">
             <Zap className="w-5 h-5 text-purple-400" />
             <h3 className="text-lg font-semibold text-white">Motion</h3>
@@ -422,7 +430,7 @@ export const VideoPage: React.FC = () => {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <GlowCard className="p-8" hover={false}>
+            <GlowCard className="p-8" {...staticGlowCardProps}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Video Settings */}
                 <div className="space-y-6">
@@ -554,7 +562,7 @@ export const VideoPage: React.FC = () => {
               transition={{ delay: 0.1 * idx }}
               className="group cursor-pointer"
             >
-              <GlowCard className="p-2">
+              <GlowCard className="p-2" onClick={() => {}}>
                 <div className="relative overflow-hidden rounded-xl">
                   <img 
                     src={video} 
@@ -588,7 +596,6 @@ export const VideoPage: React.FC = () => {
         onSelect={handleVideoModelSelect}
         activeTab="Video"
         title="Select Video Model"
-        isLoraSelector={false}
         selectorType="video"
       />
     </div>

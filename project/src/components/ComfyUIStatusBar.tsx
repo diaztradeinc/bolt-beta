@@ -14,9 +14,7 @@ import {
   ChevronDown,
   AlertCircle,
   CheckCircle,
-  Loader2,
-  Settings,
-  RefreshCw
+  Loader2
 } from 'lucide-react';
 import { useComfyUI } from '../hooks/useComfyUI';
 import { ComfyUIConnectionDiagnostic } from './ComfyUIConnectionDiagnostic';

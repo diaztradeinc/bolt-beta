@@ -14,15 +14,10 @@ interface HuggingFaceGenerationRequest {
   };
 }
 
-interface HuggingFaceResponse {
-  generated_images?: string[];
-  error?: string;
-}
-
 export class HuggingFaceService {
   private static instance: HuggingFaceService;
   private apiKey: string;
-  private baseUrl = 'https://api-inference.huggingface.co/models';
+  private baseUrl = 'https://api-inference.huggingingface.co/models';
 
   constructor() {
     this.apiKey = import.meta.env.VITE_HUGGINGFACE_API_KEY || '';
@@ -190,7 +185,7 @@ export class HuggingFaceService {
 
   // Enhanced negative prompt generation
   private enhanceNegativePrompt(
-    baseNegativePrompt: string,
+    baseNegativePrompt?: string,
     selectedEmbedding?: any,
     selectedLora?: any
   ): string {

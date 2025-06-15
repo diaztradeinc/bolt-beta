@@ -127,7 +127,7 @@ export const ComfyUIConnectionDiagnostic: React.FC<ComfyUIConnectionDiagnosticPr
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-      const _response = await fetch(baseUrl, {
+      await fetch(baseUrl, {
         method: 'HEAD',
         signal: controller.signal,
         mode: 'no-cors'

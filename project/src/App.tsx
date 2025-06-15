@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, X, Sparkles, Cpu, Eye, Settings, Play, ChevronDown, ChevronUp, Layers, Heart, Code, Image, Video, Crown, User, LogOut, Menu } from "lucide-react";
+import { Brain, X, Sparkles, Cpu, Eye, Settings, Play, ChevronDown, ChevronUp, Layers, Heart, Code, Image, Video, Crown } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ModelSelector } from "./components/ModelSelector";
 import { FavoritesManager } from "./components/FavoritesManager";
@@ -147,7 +147,8 @@ const GlowCard = ({ children, className = "", onClick, hover = true }: GlowCardP
 
 function DreamfluxAI() {
   const [currentPage, setCurrentPage] = useState<'welcome' | 'main' | 'auth' | 'success'>('welcome');
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [authMode, _setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [isVideoMode, setIsVideoMode] = useState(false);
   const [activeTab, setActiveTab] = useState("SDXL");
   const [showModelModal, setShowModelModal] = useState(false);
@@ -183,7 +184,6 @@ function DreamfluxAI() {
   ]);
 
   const { user, signOut, loading } = useAuth();
-  const { isConnected } = useComfyUI();
 
   // Redirect to auth page if not logged in (only when trying to access main)
   useEffect(() => {
@@ -298,7 +298,7 @@ function DreamfluxAI() {
   if (currentPage === 'auth') {
     return (
       <AuthPage 
-        mode={authMode} 
+        mode="signin"
         onBack={() => setCurrentPage('welcome')}
         onAuthSuccess={handleAuthSuccess}
       />
@@ -589,7 +589,7 @@ function DreamfluxAI() {
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <GlowCard className="p-8" hover={false}>
+                    <GlowCard className="p-8" hover={false} onClick={() => {}}>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Sliders */}
                         <div className="space-y-6">
@@ -751,7 +751,7 @@ function DreamfluxAI() {
                       className="group cursor-pointer"
                       onClick={() => handleEvolveImage(img)}
                     >
-                      <GlowCard className="p-2">
+                      <GlowCard className="p-2" onClick={() => {}}>
                         <div className="relative overflow-hidden rounded-xl">
                           <img 
                             src={img} 
@@ -782,7 +782,6 @@ function DreamfluxAI() {
         onSelect={handleModelSelect}
         activeTab={activeTab}
         title="Select Model"
-        isLoraSelector={false}
         selectorType="model"
       />
 
@@ -793,7 +792,6 @@ function DreamfluxAI() {
         onSelect={handleEmbeddingSelect}
         activeTab={activeTab}
         title="Select Embedding"
-        isLoraSelector={false}
         selectorType="embedding"
       />
 
@@ -804,7 +802,6 @@ function DreamfluxAI() {
         onSelect={handleLoraSelect}
         activeTab={activeTab}
         title="Select LoRA"
-        isLoraSelector={true}
         selectorType="lora"
       />
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Download, Star, Eye, X, Loader2, User, Calendar, Heart, Filter, Grid, List, Plus } from 'lucide-react';
+import { Search, Download, Star, Eye, X, Loader2, User, Heart, Grid, List, Plus } from 'lucide-react';
 import { useCivitai } from '../hooks/useCivitai';
 import { useFavorites } from '../hooks/useFavorites';
 import type { CivitaiModel } from '../types/models';
@@ -11,7 +11,6 @@ interface ModelSelectorProps {
   onSelect: (model: CivitaiModel) => void;
   activeTab: string;
   title: string;
-  isLoraSelector?: boolean;
   selectorType: 'model' | 'embedding' | 'lora' | 'video';
 }
 
@@ -21,7 +20,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   onSelect,
   activeTab,
   title,
-  isLoraSelector = false,
   selectorType
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,8 +51,16 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   // Determine which models to show based on selector type and favorites filter
   const getCurrentModels = () => {
     if (showFavoritesOnly) {
-      const favoriteItems = getFavoritesByTab(activeTab, selectorType);
-      return favoriteItems.map(fav => fav.model);
+      // When showing favorites, only use valid types for getFavoritesByTab
+      if (selectorType === 'video') {
+        // For video, filter manually
+        return getFavoritesByTab(activeTab)
+          .filter(fav => fav.type === 'model' || fav.type === 'lora')
+          .map(fav => fav.model);
+      } else {
+        return getFavoritesByTab(activeTab, selectorType as 'model' | 'embedding' | 'lora')
+          .map(fav => fav.model);
+      }
     }
 
     switch (selectorType) {
@@ -122,12 +128,27 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     onClose();
   };
 
+  // Helper to handle type-safe favorite operations
   const handleToggleFavorite = (model: CivitaiModel, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isFavorite(model.id, selectorType)) {
-      removeFromFavorites(model.id, selectorType);
+    
+    // Only use valid types for favorite operations
+    if (selectorType === 'video') {
+      // For video models, add them as regular models
+      const type = 'model';
+      if (isFavorite(model.id, type)) {
+        removeFromFavorites(model.id, type);
+      } else {
+        addToFavorites(model, type, activeTab);
+      }
     } else {
-      addToFavorites(model, selectorType, activeTab);
+      // For other types, use the selector type directly
+      const type = selectorType as 'model' | 'embedding' | 'lora';
+      if (isFavorite(model.id, type)) {
+        removeFromFavorites(model.id, type);
+      } else {
+        addToFavorites(model, type, activeTab);
+      }
     }
   };
 
@@ -165,6 +186,16 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       default:
         return 'Add Item';
     }
+  };
+
+  // Check favorites safely by handling the video type
+  const checkIsFavorite = (modelId: number) => {
+    // For video models, check if they're favorited as regular models
+    if (selectorType === 'video') {
+      return isFavorite(modelId, 'model');
+    }
+    // For other types, use the selector type directly
+    return isFavorite(modelId, selectorType as 'model' | 'embedding' | 'lora');
   };
 
   // Filter models based on search query when in favorites mode
@@ -359,14 +390,14 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                                 <motion.button
                                   onClick={(e) => handleToggleFavorite(model, e)}
                                   className={`p-2 rounded-full backdrop-blur-sm transition-all duration-300 ${
-                                    isFavorite(model.id, selectorType)
+                                    checkIsFavorite(model.id)
                                       ? 'bg-yellow-600/80 text-yellow-200'
                                       : 'bg-neural-900/60 text-neural-400 hover:bg-yellow-600/60 hover:text-yellow-200'
                                   }`}
                                   whileHover={{ scale: 1.1 }}
                                   whileTap={{ scale: 0.9 }}
                                 >
-                                  <Heart className={`w-3 h-3 ${isFavorite(model.id, selectorType) ? 'fill-current' : ''}`} />
+                                  <Heart className={`w-3 h-3 ${checkIsFavorite(model.id) ? 'fill-current' : ''}`} />
                                 </motion.button>
                               </div>
 
@@ -458,14 +489,14 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                                 <motion.button
                                   onClick={(e) => handleToggleFavorite(model, e)}
                                   className={`p-1 rounded transition-all duration-300 ${
-                                    isFavorite(model.id, selectorType)
+                                    checkIsFavorite(model.id)
                                       ? 'text-yellow-400'
                                       : 'text-neural-400 hover:text-yellow-400'
                                   }`}
                                   whileHover={{ scale: 1.1 }}
                                   whileTap={{ scale: 0.9 }}
                                 >
-                                  <Heart className={`w-3 h-3 ${isFavorite(model.id, selectorType) ? 'fill-current' : ''}`} />
+                                  <Heart className={`w-3 h-3 ${checkIsFavorite(model.id) ? 'fill-current' : ''}`} />
                                 </motion.button>
                               </div>
                             </div>
@@ -498,14 +529,14 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                       <motion.button
                         onClick={(e) => handleToggleFavorite(selectedModel, e)}
                         className={`p-2 rounded-full transition-all duration-300 ${
-                          isFavorite(selectedModel.id, selectorType)
+                          checkIsFavorite(selectedModel.id)
                             ? 'bg-yellow-600/20 text-yellow-400'
                             : 'bg-neural-700/50 text-neural-400 hover:bg-yellow-600/20 hover:text-yellow-400'
                         }`}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                       >
-                        <Heart className={`w-4 h-4 ${isFavorite(selectedModel.id, selectorType) ? 'fill-current' : ''}`} />
+                        <Heart className={`w-4 h-4 ${checkIsFavorite(selectedModel.id) ? 'fill-current' : ''}`} />
                       </motion.button>
                     </div>
                   </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Wifi, WifiOff, Server, AlertCircle } from 'lucide-react';
+import { Wifi, WifiOff, AlertCircle } from 'lucide-react';
 
 interface ConnectionStatusProps {
   isConnected: boolean;
